@@ -4,6 +4,7 @@ import java.nio.file.Path
 import java.time.LocalDate
 
 import com.github.leosilvadev.gtfs.Calendar
+import com.github.leosilvadev.gtfs.csv.exceptions.FileReadException
 
 object GtfsCalendarFile extends GtfsFile[Calendar] {
 
@@ -20,22 +21,23 @@ object GtfsCalendarFile extends GtfsFile[Calendar] {
     "end_date" -> 9
   )
 
-  override def read(filePath: Path): LazyList[Calendar] = {
-    readLines(filePath).map(cols => {
-      println("Mapping...")
-      Calendar(
-        cols(0).toLong,
-        cols(1),
-        cols(2),
-        cols(3),
-        cols(4),
-        cols(5),
-        cols(6),
-        cols(7),
-        LocalDate.parse(cols(8), dateFormatter),
-        LocalDate.parse(cols(9), dateFormatter)
-      )
-    })
+  override def read(filePath: Path): Either[FileReadException, LazyList[Calendar]] = {
+    readLines(filePath).map(lines =>
+      lines.map(cols => {
+        Calendar(
+          cols(0).toLong,
+          cols(1),
+          cols(2),
+          cols(3),
+          cols(4),
+          cols(5),
+          cols(6),
+          cols(7),
+          LocalDate.parse(cols(8), dateFormatter),
+          LocalDate.parse(cols(9), dateFormatter)
+        )
+      })
+    )
   }
 
 }

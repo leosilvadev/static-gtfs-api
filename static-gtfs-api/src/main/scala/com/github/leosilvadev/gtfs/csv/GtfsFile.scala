@@ -3,6 +3,8 @@ package com.github.leosilvadev.gtfs.csv
 import java.nio.file.{Files, Path}
 import java.time.format.DateTimeFormatter
 
+import com.github.leosilvadev.gtfs.csv.exceptions.{FileReadException, MissingFieldsException}
+
 import scala.collection.mutable
 import scala.jdk.StreamConverters._
 
@@ -16,34 +18,38 @@ trait GtfsFile[T] {
   val requiredColumns: Map[String, Int] = Map.empty
   val optionalColumns: Map[String, Int] = Map.empty
 
-  def read(filePath: Path): LazyList[T]
+  def read(filePath: Path): Either[FileReadException, LazyList[T]]
 
-  private[csv] def readLines(filePath: Path): LazyList[Array[String]] = {
+  private[csv] def readLines(filePath: Path): Either[FileReadException, LazyList[Array[String]]] = {
     val lazyLines = Files.lines(filePath).toScala(LazyList)
 
-    val headers = lazyLines.head.split(",").map(_.replace("\"", ""))
-    val requiredKeys = requiredColumns.keys.toArray.sorted
+    val headers = lazyLines.head.split(",").map(_.replace("\"", "")).toList
+    val requiredKeys = requiredColumns.keys.toList.sorted
 
-    if (headers.intersect(requiredKeys).sorted.sameElements(requiredKeys)) {
-      val mapTo = mutable.Map[Int, Int]()
-      headers.zipWithIndex.collect {
-        case (header, index) if optionalColumns.contains(header) =>
-          mapTo.put(index, optionalColumns(header))
-        case (header, index) if requiredColumns.contains(header) =>
-          mapTo.put(index, requiredColumns(header))
-      }
+    requiredKeys.partition(headers.contains) match {
+      case (_, Nil) =>
+        val mapTo = mutable.Map[Int, Int]()
+        headers.zipWithIndex.collect {
+          case (header, index) if optionalColumns.contains(header) =>
+            mapTo.put(index, optionalColumns(header))
+          case (header, index) if requiredColumns.contains(header) =>
+            mapTo.put(index, requiredColumns(header))
+        }
 
-      lazyLines.tail
-        .map(_.split(","))
-        .map(cols => {
-          mapTo.values.toList.sorted
-            .map(toIndex => {
-              cols(mapTo(toIndex))
+        Right(
+          lazyLines.tail
+            .map(_.split(","))
+            .map(cols => {
+              mapTo.values.toList.sorted
+                .map(toIndex => {
+                  cols(mapTo(toIndex))
+                })
+                .toArray
             })
-            .toArray
-        })
-    } else {
-      throw new IllegalArgumentException("Missing required fields")
+        )
+
+      case (_, notFoundKeys) =>
+        Left(new MissingFieldsException(notFoundKeys))
     }
   }
 
