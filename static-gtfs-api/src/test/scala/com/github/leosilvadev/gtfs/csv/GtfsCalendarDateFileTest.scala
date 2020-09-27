@@ -31,7 +31,6 @@ class GtfsCalendarDateFileTest extends AnyFunSpec with Matchers {
           calendars must have size 3
           calendars.head.isRight mustBe true
           calendars(1).isRight mustBe true
-          calendars(2).isRight mustBe false
           calendars(2) match {
             case Right(_) => fail("Parse should have failed by invalid field")
             case Left(ex) =>

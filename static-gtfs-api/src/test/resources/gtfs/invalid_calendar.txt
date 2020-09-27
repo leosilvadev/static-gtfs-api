@@ -1,0 +1,4 @@
+"service_id","monday","tuesday","wednesday","thursday","friday","saturday","sunday","start_date","end_date"
+1,0,,0,0,0,1,1,20200924,20201212
+2,1,1,1,1,1,0,0,20200924,20201212
+3,0,0,0,0,0,0,0,,20201212

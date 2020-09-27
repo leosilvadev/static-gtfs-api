@@ -23,6 +23,26 @@ class GtfsCalendarFileTest extends AnyFunSpec with Matchers {
           ex.asInstanceOf[MissingFieldsException].fields mustBe List("friday")
       }
     }
+
+    it("must fail trying to read a file if any required field is invalid") {
+      GtfsCalendarFile.read("gtfs/invalid_calendar.txt") match {
+        case Left(ex) => fail("Failed because of unexpected error", ex)
+        case Right(calendars) =>
+          calendars must have size 3
+          calendars.head match {
+            case Right(_) => fail("Parse should have failed by invalid field")
+            case Left(ex) =>
+              ex.field mustBe "tuesday"
+          }
+          calendars(1).isRight mustBe true
+          calendars(2) match {
+            case Right(_) => fail("Parse should have failed by invalid field")
+            case Left(ex) =>
+              ex.field mustBe "start_date"
+          }
+
+      }
+    }
   }
 
 }
