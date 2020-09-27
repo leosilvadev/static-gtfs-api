@@ -1,8 +1,8 @@
 package com.github.leosilvadev.gtfs.csv
 
+import java.nio.file.Path
 import java.time.LocalDate
 
-import better.files.File
 import com.github.leosilvadev.gtfs.Calendar
 
 object GtfsCalendarFile extends GtfsFile[Calendar] {
@@ -20,8 +20,9 @@ object GtfsCalendarFile extends GtfsFile[Calendar] {
     "end_date" -> 9
   )
 
-  override def read(file: File): Iterator[Calendar] = {
-    readLines(file).map(cols => {
+  override def read(filePath: Path): LazyList[Calendar] = {
+    readLines(filePath).map(cols => {
+      println("Mapping...")
       Calendar(
         cols(0).toLong,
         cols(1),

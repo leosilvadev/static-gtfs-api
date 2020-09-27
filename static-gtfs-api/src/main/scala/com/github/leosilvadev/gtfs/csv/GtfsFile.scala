@@ -1,10 +1,10 @@
 package com.github.leosilvadev.gtfs.csv
 
+import java.nio.file.{Files, Path}
 import java.time.format.DateTimeFormatter
 
-import better.files.File
-
 import scala.collection.mutable
+import scala.jdk.StreamConverters._
 
 trait GtfsFile[T] {
 
@@ -16,11 +16,12 @@ trait GtfsFile[T] {
   val requiredColumns: Map[String, Int] = Map.empty
   val optionalColumns: Map[String, Int] = Map.empty
 
-  def read(file: File): Iterator[T]
+  def read(filePath: Path): LazyList[T]
 
-  private[csv] def readLines(file: File): Iterator[Array[String]] = {
-    val iterator = file.lineIterator
-    val headers = iterator.next().split(",").map(_.replace("\"", ""))
+  private[csv] def readLines(filePath: Path): LazyList[Array[String]] = {
+    val lazyLines = Files.lines(filePath).toScala(LazyList)
+
+    val headers = lazyLines.head.split(",").map(_.replace("\"", ""))
     val requiredKeys = requiredColumns.keys.toArray.sorted
 
     if (headers.intersect(requiredKeys).sorted.sameElements(requiredKeys)) {
@@ -32,11 +33,15 @@ trait GtfsFile[T] {
           mapTo.put(index, requiredColumns(header))
       }
 
-      iterator.map(_.split(",")).map(cols => {
-        mapTo.values.toList.sorted.map(toIndex => {
-          cols(mapTo(toIndex))
-        }).toArray
-      })
+      lazyLines.tail
+        .map(_.split(","))
+        .map(cols => {
+          mapTo.values.toList.sorted
+            .map(toIndex => {
+              cols(mapTo(toIndex))
+            })
+            .toArray
+        })
     } else {
       throw new IllegalArgumentException("Missing required fields")
     }
