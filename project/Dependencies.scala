@@ -12,7 +12,6 @@ object Versions {
 }
 
 object Dependencies {
-  val AnalyticsDomain = "com.mobimeo.data.domain" %% "analytics-backend-scala-with-schema" % Versions.Analytics
   val Avro = "io.confluent" % "kafka-avro-serializer" % "5.5.0"
 
   val BetterFiles = "com.github.pathikrit" %% "better-files" % "3.9.1"
