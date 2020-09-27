@@ -1,9 +1,8 @@
 package com.github.leosilvadev.gtfs.csv
 
 import java.nio.file.Path
-import java.time.LocalDate
 
-import com.github.leosilvadev.gtfs.csv.exceptions.FileReadException
+import com.github.leosilvadev.gtfs.csv.exceptions.{FileReadException, InvalidFieldValueException}
 import com.github.leosilvadev.gtfs.{CalendarDate, CalendarDateException}
 
 object GtfsCalendarDateFile extends GtfsFile[CalendarDate] {
@@ -14,10 +13,16 @@ object GtfsCalendarDateFile extends GtfsFile[CalendarDate] {
     "exception_type" -> 2
   )
 
-  override def read(filePath: Path): Either[FileReadException, LazyList[CalendarDate]] = {
+  override def read(
+      filePath: Path
+  ): Either[FileReadException, LazyList[Either[InvalidFieldValueException, CalendarDate]]] = {
     readLines(filePath).map { rows =>
       rows.map { cols =>
-        CalendarDate(cols(0).toLong, LocalDate.parse(cols(1), dateFormatter), CalendarDateException(cols(2)))
+        for {
+          id <- toLong(cols(0), "service_id")
+          date <- toDate(cols(1), "date")
+          calendarException <- CalendarDateException.from(cols(2), "exception_type")
+        } yield CalendarDate(id, date, calendarException)
       }
     }
   }

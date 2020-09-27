@@ -2,6 +2,8 @@ package com.github.leosilvadev.gtfs
 
 import java.time.LocalDate
 
+import com.github.leosilvadev.gtfs.csv.exceptions.InvalidFieldValueException
+
 class Domain {}
 
 case class Agency(id: Long, name: String, url: String, timezone: String, lang: Option[String], phone: Option[String])
@@ -22,12 +24,15 @@ case class Calendar(
 sealed trait CalendarDateException
 
 object CalendarDateException {
-  def apply(value: String): CalendarDateException = this(value.toInt)
 
-  def apply(value: Int): CalendarDateException =
-    if (value == 1) AddDate
-    else if (value == 2) RemoveDate
-    else throw new IllegalArgumentException(s"Invalid calendar date exception: $value")
+  def from(value: String, field: String): Either[InvalidFieldValueException, CalendarDateException] =
+    try {
+      if (value == "1") Right(AddDate)
+      else if (value == "2") Right(RemoveDate)
+      else Left(new InvalidFieldValueException(field, value))
+    } catch {
+      case _: Throwable => Left(new InvalidFieldValueException(field, value))
+    }
 }
 object AddDate extends CalendarDateException
 object RemoveDate extends CalendarDateException

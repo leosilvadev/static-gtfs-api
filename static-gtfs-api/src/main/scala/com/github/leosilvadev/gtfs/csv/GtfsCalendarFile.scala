@@ -1,10 +1,9 @@
 package com.github.leosilvadev.gtfs.csv
 
 import java.nio.file.Path
-import java.time.LocalDate
 
 import com.github.leosilvadev.gtfs.Calendar
-import com.github.leosilvadev.gtfs.csv.exceptions.FileReadException
+import com.github.leosilvadev.gtfs.csv.exceptions.{FileReadException, InvalidFieldValueException}
 
 object GtfsCalendarFile extends GtfsFile[Calendar] {
 
@@ -21,22 +20,24 @@ object GtfsCalendarFile extends GtfsFile[Calendar] {
     "end_date" -> 9
   )
 
-  override def read(filePath: Path): Either[FileReadException, LazyList[Calendar]] = {
+  override def read(
+      filePath: Path
+  ): Either[FileReadException, LazyList[Either[InvalidFieldValueException, Calendar]]] = {
     readLines(filePath).map(lines =>
-      lines.map(cols => {
-        Calendar(
-          cols(0).toLong,
-          cols(1),
-          cols(2),
-          cols(3),
-          cols(4),
-          cols(5),
-          cols(6),
-          cols(7),
-          LocalDate.parse(cols(8), dateFormatter),
-          LocalDate.parse(cols(9), dateFormatter)
-        )
-      })
+      lines.map(cols =>
+        for {
+          serviceId <- toLong(cols(0), "service_id")
+          monday <- toBoolean(cols(1), "monday")
+          tuesday <- toBoolean(cols(1), "tuesday")
+          wednesday <- toBoolean(cols(1), "wednesday")
+          thursday <- toBoolean(cols(1), "thursday")
+          friday <- toBoolean(cols(1), "friday")
+          saturday <- toBoolean(cols(1), "saturday")
+          sunday <- toBoolean(cols(1), "sunday")
+          startDate <- toDate(cols(1), "start_date")
+          endDate <- toDate(cols(1), "end_date")
+        } yield Calendar(serviceId, monday, tuesday, wednesday, thursday, friday, saturday, sunday, startDate, endDate)
+      )
     )
   }
 
