@@ -38,7 +38,6 @@ class FieldMapperTest extends AnyFunSpec with Matchers {
 
     describe("Mapping the columns") {
       it("must map the columns even if some of them does not exist") {
-        Given
         val columns = Array(
           "000008012713",
           "",

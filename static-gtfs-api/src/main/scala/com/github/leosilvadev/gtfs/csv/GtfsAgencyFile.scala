@@ -1,9 +1,9 @@
 package com.github.leosilvadev.gtfs.csv
 
-import com.github.leosilvadev.gtfs.GtfsAgency
+import com.github.leosilvadev.gtfs.domain.GtfsAgency
 import com.github.leosilvadev.gtfs.csv.exceptions.InvalidFieldValueException
 
-case class GtfsAgencyFile(globalAgencyId: Option[Long] = None) extends GtfsFile[GtfsAgency] {
+case class GtfsAgencyFile(globalAgencyId: Option[String] = None) extends GtfsFile[GtfsAgency] {
 
   override val requiredColumns: Map[String, Int] = Map(
     "agency_name" -> 1,
@@ -23,7 +23,7 @@ case class GtfsAgencyFile(globalAgencyId: Option[Long] = None) extends GtfsFile[
       cols: Array[String]
   ): Either[InvalidFieldValueException, GtfsAgency] =
     for {
-      id <- toLong(cols(0), "agency_id", globalAgencyId)
+      id <- toString(cols(0), "agency_id", globalAgencyId)
       name <- toString(cols(1), "agency_name")
       url <- toString(cols(2), "agency_url")
       timezone <- toString(cols(3), "agency_timezone")

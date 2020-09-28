@@ -6,17 +6,6 @@ import com.github.leosilvadev.gtfs.csv.exceptions.InvalidFieldValueException
 
 class Domain {}
 
-case class GtfsAgency(
-    id: Long,
-    name: String,
-    url: String,
-    timezone: String,
-    lang: Option[String],
-    phone: Option[String],
-    fareUrl: Option[String],
-    email: Option[String]
-)
-
 case class GtfsCalendar(
     serviceId: Long,
     monday: Boolean,

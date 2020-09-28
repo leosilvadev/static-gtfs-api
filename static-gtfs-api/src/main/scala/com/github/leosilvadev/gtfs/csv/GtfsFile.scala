@@ -49,6 +49,16 @@ trait GtfsFile[T] {
     )
   }
 
+  private[csv] def toString(
+      value: String,
+      field: String,
+      defaultValue: Option[String] = None
+  ): Either[InvalidFieldValueException, String] = {
+    val finalValue =
+      Option(value).map(_.replaceAllLiterally("\"", "")).map(_.trim).filterNot(_.isEmpty).orElse(defaultValue)
+    if (finalValue.isEmpty) Left(new InvalidFieldValueException(field, value)) else Right(finalValue.get)
+  }
+
   private[csv] def toLong(
       value: String,
       field: String,
@@ -91,11 +101,6 @@ trait GtfsFile[T] {
     } catch {
       case _: Throwable => None
     }
-
-  private[csv] def toString(value: String, field: String): Either[InvalidFieldValueException, String] = {
-    val finalValue = value.replaceAllLiterally("\"", "").trim
-    if (finalValue.isEmpty) Left(new InvalidFieldValueException(field, value)) else Right(finalValue)
-  }
 
   private[csv] def toOptionalString(value: String): Option[String] = {
     val finalValue = value.replaceAllLiterally("\"", "").trim

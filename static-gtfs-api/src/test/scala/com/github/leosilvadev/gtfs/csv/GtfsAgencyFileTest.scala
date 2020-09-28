@@ -1,6 +1,6 @@
 package com.github.leosilvadev.gtfs.csv
 
-import com.github.leosilvadev.gtfs.GtfsAgency
+import com.github.leosilvadev.gtfs.domain.GtfsAgency
 import com.github.leosilvadev.gtfs.csv.FileReadOps._
 import com.github.leosilvadev.gtfs.csv.exceptions.MissingFieldsException
 import org.scalatest.funspec.AnyFunSpec
@@ -54,7 +54,7 @@ class GtfsAgencyFileTest extends AnyFunSpec with Matchers {
           case Right(calendars) =>
             calendars.head mustBe Right(
               GtfsAgency(
-                1,
+                "1",
                 "S-Bahn Berlin GmbH",
                 "http://www.s-bahn-berlin.de",
                 "Europe/Berlin",
