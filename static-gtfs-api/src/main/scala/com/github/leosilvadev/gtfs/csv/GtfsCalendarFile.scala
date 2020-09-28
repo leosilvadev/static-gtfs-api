@@ -1,6 +1,6 @@
 package com.github.leosilvadev.gtfs.csv
 
-import com.github.leosilvadev.gtfs.GtfsCalendar
+import com.github.leosilvadev.gtfs.domain.GtfsCalendar
 import com.github.leosilvadev.gtfs.csv.exceptions.InvalidFieldValueException
 
 object GtfsCalendarFile extends GtfsFile[GtfsCalendar] {
@@ -22,7 +22,7 @@ object GtfsCalendarFile extends GtfsFile[GtfsCalendar] {
       cols: Array[String]
   ): Either[InvalidFieldValueException, GtfsCalendar] =
     for {
-      serviceId <- toLong(cols(0), "service_id")
+      serviceId <- toString(cols(0), "service_id")
       monday <- toBoolean(cols(1), "monday")
       tuesday <- toBoolean(cols(2), "tuesday")
       wednesday <- toBoolean(cols(3), "wednesday")

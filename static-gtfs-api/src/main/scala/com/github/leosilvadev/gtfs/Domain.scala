@@ -6,19 +6,6 @@ import com.github.leosilvadev.gtfs.csv.exceptions.InvalidFieldValueException
 
 class Domain {}
 
-case class GtfsCalendar(
-    serviceId: Long,
-    monday: Boolean,
-    tuesday: Boolean,
-    wednesday: Boolean,
-    thursday: Boolean,
-    friday: Boolean,
-    saturday: Boolean,
-    sunday: Boolean,
-    startDate: LocalDate,
-    endDate: LocalDate
-)
-
 sealed trait GtfsCalendarDateException
 
 object GtfsCalendarDateException {
