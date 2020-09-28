@@ -1,0 +1,3 @@
+"stop_code","stop_name","stop_desc","stop_lat","stop_lon","location_type","parent_station","wheelchair_boarding","platform_code","zone_id"
+"","Rangsdorf, Bahnhof",,"52.294125000000","13.431112000000",0,900000245025,,"",""
+"","Leipzig, Hauptbahnhof",,"51.344817000000","12.381321000000",0,900000550090,,"",""
