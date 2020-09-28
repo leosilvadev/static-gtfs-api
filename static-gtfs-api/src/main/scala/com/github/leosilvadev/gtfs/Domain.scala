@@ -12,7 +12,9 @@ case class GtfsAgency(
     url: String,
     timezone: String,
     lang: Option[String],
-    phone: Option[String]
+    phone: Option[String],
+    fareUrl: Option[String],
+    email: Option[String]
 )
 
 case class GtfsCalendar(

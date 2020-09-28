@@ -1,0 +1,4 @@
+"agency_id","agency_url","agency_timezone","agency_lang","agency_phone"
+1,"http://www.s-bahn-berlin.de","Europe/Berlin","de",""
+32,"https://www.ovg-online.de","Europe/Berlin","de",""
+47,"http://www.vbbr.de","Europe/Berlin","de",""

@@ -30,15 +30,25 @@ trait GtfsFile[T] {
 
     val headers = lazyLines.head.split(",").map(_.replace("\"", "")).toList
     val requiredKeys = requiredColumns.keys.toList.sorted
+    val optionalKeys = optionalColumns.keys.toList.sorted
 
     requiredKeys.partition(headers.contains) match {
       case (_, Nil) =>
         val mapTo = mutable.Map[Int, Int]()
+        val optionalKeysFound = mutable.Buffer[String]()
         headers.zipWithIndex.collect {
           case (header, index) if optionalColumns.contains(header) =>
-            mapTo.put(index, optionalColumns(header))
+            val targetIndex = optionalColumns(header)
+            mapTo.put(index, targetIndex)
+            optionalKeysFound.addOne(header)
           case (header, index) if requiredColumns.contains(header) =>
             mapTo.put(index, requiredColumns(header))
+        }
+
+        optionalKeys.diff(optionalKeysFound).foreach { key =>
+          {
+            mapTo.put(mapTo.keys.last + 1, optionalColumns(key))
+          }
         }
 
         Right(
@@ -47,7 +57,8 @@ trait GtfsFile[T] {
             .map(cols => {
               mapTo.values
                 .map(toIndex => {
-                  cols(mapTo(toIndex))
+                  if (toIndex >= cols.length) ""
+                  else cols(mapTo(toIndex))
                 })
                 .toArray
             })
@@ -58,12 +69,27 @@ trait GtfsFile[T] {
     }
   }
 
-  private[csv] def toLong(value: String, field: String): Either[InvalidFieldValueException, Long] =
+  private[csv] def toLong(
+      value: String,
+      field: String,
+      defaultValue: Option[Long] = None
+  ): Either[InvalidFieldValueException, Long] =
     try {
       Right(value.toLong)
     } catch {
-      case _: Throwable => Left(new InvalidFieldValueException(field, value))
+      case _: Throwable if defaultValue.isDefined => Right(defaultValue.get)
+      case _: Throwable                           => Left(new InvalidFieldValueException(field, value))
     }
+
+  private[csv] def toString(value: String, field: String): Either[InvalidFieldValueException, String] = {
+    val finalValue = value.replaceAllLiterally("\"", "").trim
+    if (finalValue.isEmpty) Left(new InvalidFieldValueException(field, value)) else Right(finalValue)
+  }
+
+  private[csv] def toOptionalString(value: String): Option[String] = {
+    val finalValue = value.replaceAllLiterally("\"", "").trim
+    if (finalValue.isEmpty) None else Some(finalValue)
+  }
 
   private[csv] def toBoolean(value: String, field: String): Either[InvalidFieldValueException, Boolean] =
     try {
