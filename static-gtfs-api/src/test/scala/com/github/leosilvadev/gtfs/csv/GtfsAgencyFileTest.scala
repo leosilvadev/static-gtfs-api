@@ -52,7 +52,6 @@ class GtfsAgencyFileTest extends AnyFunSpec with Matchers {
         GtfsAgencyFile(None).read("gtfs/complete_agency.txt") match {
           case Left(ex)         => fail("Failed because of unexpected error", ex)
           case Right(calendars) =>
-            //1,"S-Bahn Berlin GmbH","http://www.s-bahn-berlin.de","Europe/Berlin","de",""
             calendars.head mustBe Right(
               GtfsAgency(
                 1,
