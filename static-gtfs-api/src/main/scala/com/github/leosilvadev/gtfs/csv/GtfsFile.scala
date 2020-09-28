@@ -45,7 +45,7 @@ trait GtfsFile[T] {
           lazyLines.tail
             .map(_.split(","))
             .map(cols => {
-              mapTo.values.toList.sorted
+              mapTo.values
                 .map(toIndex => {
                   cols(mapTo(toIndex))
                 })
