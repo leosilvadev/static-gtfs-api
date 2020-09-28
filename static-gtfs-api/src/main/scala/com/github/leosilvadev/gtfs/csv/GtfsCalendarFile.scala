@@ -1,9 +1,7 @@
 package com.github.leosilvadev.gtfs.csv
 
-import java.nio.file.Path
-
 import com.github.leosilvadev.gtfs.GtfsCalendar
-import com.github.leosilvadev.gtfs.csv.exceptions.{FileReadException, InvalidFieldValueException}
+import com.github.leosilvadev.gtfs.csv.exceptions.InvalidFieldValueException
 
 object GtfsCalendarFile extends GtfsFile[GtfsCalendar] {
 
@@ -20,36 +18,31 @@ object GtfsCalendarFile extends GtfsFile[GtfsCalendar] {
     "end_date" -> 9
   )
 
-  override def read(
-      filePath: Path
-  ): Either[FileReadException, LazyList[Either[InvalidFieldValueException, GtfsCalendar]]] = {
-    readLines(filePath).map(lines =>
-      lines.map(cols =>
-        for {
-          serviceId <- toLong(cols(0), "service_id")
-          monday <- toBoolean(cols(1), "monday")
-          tuesday <- toBoolean(cols(2), "tuesday")
-          wednesday <- toBoolean(cols(3), "wednesday")
-          thursday <- toBoolean(cols(4), "thursday")
-          friday <- toBoolean(cols(5), "friday")
-          saturday <- toBoolean(cols(6), "saturday")
-          sunday <- toBoolean(cols(7), "sunday")
-          startDate <- toDate(cols(8), "start_date")
-          endDate <- toDate(cols(9), "end_date")
-        } yield GtfsCalendar(
-          serviceId,
-          monday,
-          tuesday,
-          wednesday,
-          thursday,
-          friday,
-          saturday,
-          sunday,
-          startDate,
-          endDate
-        )
-      )
+  override def parse(
+      cols: Array[String]
+  ): Either[InvalidFieldValueException, GtfsCalendar] =
+    for {
+      serviceId <- toLong(cols(0), "service_id")
+      monday <- toBoolean(cols(1), "monday")
+      tuesday <- toBoolean(cols(2), "tuesday")
+      wednesday <- toBoolean(cols(3), "wednesday")
+      thursday <- toBoolean(cols(4), "thursday")
+      friday <- toBoolean(cols(5), "friday")
+      saturday <- toBoolean(cols(6), "saturday")
+      sunday <- toBoolean(cols(7), "sunday")
+      startDate <- toDate(cols(8), "start_date")
+      endDate <- toDate(cols(9), "end_date")
+    } yield GtfsCalendar(
+      serviceId,
+      monday,
+      tuesday,
+      wednesday,
+      thursday,
+      friday,
+      saturday,
+      sunday,
+      startDate,
+      endDate
     )
-  }
 
 }

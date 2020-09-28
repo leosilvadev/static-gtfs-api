@@ -50,7 +50,7 @@ class GtfsAgencyFileTest extends AnyFunSpec with Matchers {
     describe("Value assignment correctness") {
       it("must assign all the values properly") {
         GtfsAgencyFile(None).read("gtfs/complete_agency.txt") match {
-          case Left(ex)         => fail("Failed because of unexpected error", ex)
+          case Left(ex) => fail("Failed because of unexpected error", ex)
           case Right(calendars) =>
             calendars.head mustBe Right(
               GtfsAgency(

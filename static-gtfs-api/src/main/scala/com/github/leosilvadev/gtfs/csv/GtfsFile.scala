@@ -23,7 +23,10 @@ trait GtfsFile[T] {
   val requiredColumns: Map[String, Int] = Map.empty
   val optionalColumns: Map[String, Int] = Map.empty
 
-  def read(filePath: Path): Either[FileReadException, LazyList[Either[InvalidFieldValueException, T]]]
+  def parse(columns: Array[String]): Either[InvalidFieldValueException, T]
+
+  def read(filePath: Path): Either[FileReadException, LazyList[Either[InvalidFieldValueException, T]]] =
+    readLines(filePath).map(_.map(parse))
 
   private[csv] def readLines(filePath: Path): Either[FileReadException, LazyList[Array[String]]] = {
     val lazyLines = Files.lines(filePath).toScala(LazyList)
