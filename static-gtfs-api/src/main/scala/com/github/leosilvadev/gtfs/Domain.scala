@@ -4,8 +4,6 @@ import java.time.LocalDate
 
 import com.github.leosilvadev.gtfs.csv.exceptions.InvalidFieldValueException
 
-class Domain {}
-
 sealed trait GtfsCalendarDateException
 
 object GtfsCalendarDateException {
