@@ -3,7 +3,7 @@ package com.github.leosilvadev.gtfs.csv
 import java.time.LocalDate
 
 import FileReadOps._
-import com.github.leosilvadev.gtfs.Calendar
+import com.github.leosilvadev.gtfs.GtfsCalendar
 import com.github.leosilvadev.gtfs.csv.exceptions.MissingFieldsException
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.must.Matchers
@@ -55,7 +55,7 @@ class GtfsCalendarFileTest extends AnyFunSpec with Matchers {
           case Left(ex) => fail("Failed because of unexpected error", ex)
           case Right(calendars) =>
             calendars.head mustBe Right(
-              Calendar(
+              GtfsCalendar(
                 1,
                 monday = false,
                 tuesday = false,

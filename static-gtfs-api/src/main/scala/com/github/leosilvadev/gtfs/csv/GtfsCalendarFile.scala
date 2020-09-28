@@ -2,10 +2,10 @@ package com.github.leosilvadev.gtfs.csv
 
 import java.nio.file.Path
 
-import com.github.leosilvadev.gtfs.Calendar
+import com.github.leosilvadev.gtfs.GtfsCalendar
 import com.github.leosilvadev.gtfs.csv.exceptions.{FileReadException, InvalidFieldValueException}
 
-object GtfsCalendarFile extends GtfsFile[Calendar] {
+object GtfsCalendarFile extends GtfsFile[GtfsCalendar] {
 
   override val requiredColumns: Map[String, Int] = Map(
     "service_id" -> 0,
@@ -22,7 +22,7 @@ object GtfsCalendarFile extends GtfsFile[Calendar] {
 
   override def read(
       filePath: Path
-  ): Either[FileReadException, LazyList[Either[InvalidFieldValueException, Calendar]]] = {
+  ): Either[FileReadException, LazyList[Either[InvalidFieldValueException, GtfsCalendar]]] = {
     readLines(filePath).map(lines =>
       lines.map(cols =>
         for {
@@ -36,7 +36,18 @@ object GtfsCalendarFile extends GtfsFile[Calendar] {
           sunday <- toBoolean(cols(7), "sunday")
           startDate <- toDate(cols(8), "start_date")
           endDate <- toDate(cols(9), "end_date")
-        } yield Calendar(serviceId, monday, tuesday, wednesday, thursday, friday, saturday, sunday, startDate, endDate)
+        } yield GtfsCalendar(
+          serviceId,
+          monday,
+          tuesday,
+          wednesday,
+          thursday,
+          friday,
+          saturday,
+          sunday,
+          startDate,
+          endDate
+        )
       )
     )
   }

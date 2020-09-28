@@ -6,9 +6,16 @@ import com.github.leosilvadev.gtfs.csv.exceptions.InvalidFieldValueException
 
 class Domain {}
 
-case class Agency(id: Long, name: String, url: String, timezone: String, lang: Option[String], phone: Option[String])
+case class GtfsAgency(
+    id: Long,
+    name: String,
+    url: String,
+    timezone: String,
+    lang: Option[String],
+    phone: Option[String]
+)
 
-case class Calendar(
+case class GtfsCalendar(
     serviceId: Long,
     monday: Boolean,
     tuesday: Boolean,
@@ -21,11 +28,11 @@ case class Calendar(
     endDate: LocalDate
 )
 
-sealed trait CalendarDateException
+sealed trait GtfsCalendarDateException
 
-object CalendarDateException {
+object GtfsCalendarDateException {
 
-  def from(value: String, field: String): Either[InvalidFieldValueException, CalendarDateException] =
+  def from(value: String, field: String): Either[InvalidFieldValueException, GtfsCalendarDateException] =
     try {
       if (value == "1") Right(AddDate)
       else if (value == "2") Right(RemoveDate)
@@ -34,12 +41,12 @@ object CalendarDateException {
       case _: Throwable => Left(new InvalidFieldValueException(field, value))
     }
 }
-object AddDate extends CalendarDateException
-object RemoveDate extends CalendarDateException
+object AddDate extends GtfsCalendarDateException
+object RemoveDate extends GtfsCalendarDateException
 
-case class CalendarDate(serviceId: Long, date: LocalDate, exceptionType: CalendarDateException)
+case class GtfsCalendarDate(serviceId: Long, date: LocalDate, exceptionType: GtfsCalendarDateException)
 
-case class Route(
+case class GtfsRoute(
     id: String,
     agencyId: Long,
     shortName: Option[String],
