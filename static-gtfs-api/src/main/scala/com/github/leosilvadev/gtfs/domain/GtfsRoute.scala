@@ -46,7 +46,7 @@ package com.github.leosilvadev.gtfs.domain
   * */
 case class GtfsRoute(
     id: String,
-    agencyId: Long,
+    agencyId: String,
     shortName: Option[String],
     longName: Option[String],
     description: Option[String],

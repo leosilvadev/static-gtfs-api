@@ -72,6 +72,17 @@ trait GtfsFile[T] {
       case _: Throwable                           => Left(new InvalidFieldValueException(field, value))
     }
 
+  private[csv] def toInt(
+      value: String,
+      field: String
+  ): Either[InvalidFieldValueException, Int] =
+    try {
+      val finalValue = value.replaceAllLiterally("\"", "").trim
+      Right(finalValue.toInt)
+    } catch {
+      case _: Throwable => Left(new InvalidFieldValueException(field, value))
+    }
+
   private[csv] def toOptionalDouble(
       value: String
   ): Option[Double] =

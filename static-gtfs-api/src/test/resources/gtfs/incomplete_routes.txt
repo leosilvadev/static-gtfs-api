@@ -1,0 +1,8 @@
+"agency_id","route_short_name","route_long_name","route_type","route_color","route_text_color","route_desc"
+32,"823","",700,"","",""
+32,"848","",3,"","",""
+108,"RE7","",100,"","",""
+108,"RE5","",100,"0080FF","FFFFFF",""
+108,"RE3","",100,"FF5900","FFFFFF","Wittenberg/Falkenberg <> Berlin <> Stralsund/Schwedt"
+108,"RE1","",100,"","",""
+108,"RB24","",100,"","",""
