@@ -1,7 +1,7 @@
 package com.github.leosilvadev.gtfs.csv
 
 import com.github.leosilvadev.gtfs.csv.exceptions.InvalidFieldValueException
-import com.github.leosilvadev.gtfs.{GtfsCalendarDate, GtfsCalendarDateException}
+import com.github.leosilvadev.gtfs.domain.GtfsCalendarDate
 
 object GtfsCalendarDateFile extends GtfsFile[GtfsCalendarDate] {
 
@@ -13,10 +13,12 @@ object GtfsCalendarDateFile extends GtfsFile[GtfsCalendarDate] {
 
   override def parse(
       cols: Array[String]
-  ): Either[InvalidFieldValueException, GtfsCalendarDate] =
+  ): Either[InvalidFieldValueException, GtfsCalendarDate] = {
     for {
-      id <- toLong(cols(0), "service_id")
+      id <- toString(cols(0), "service_id")
       date <- toDate(cols(1), "date")
-      calendarException <- GtfsCalendarDateException.from(cols(2), "exception_type")
-    } yield GtfsCalendarDate(id, date, calendarException)
+      exceptionType <- toString(cols(2), "exception_type")
+      calendarDate <- GtfsCalendarDate(id, date, exceptionType, "exception_type")
+    } yield calendarDate
+  }
 }

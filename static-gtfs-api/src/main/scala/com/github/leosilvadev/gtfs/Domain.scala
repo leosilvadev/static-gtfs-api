@@ -1,27 +1,5 @@
 package com.github.leosilvadev.gtfs
 
-import java.time.LocalDate
-
-import com.github.leosilvadev.gtfs.csv.exceptions.InvalidFieldValueException
-
-sealed trait GtfsCalendarDateException
-
-object GtfsCalendarDateException {
-
-  def from(value: String, field: String): Either[InvalidFieldValueException, GtfsCalendarDateException] =
-    try {
-      if (value == "1") Right(AddDate)
-      else if (value == "2") Right(RemoveDate)
-      else Left(new InvalidFieldValueException(field, value))
-    } catch {
-      case _: Throwable => Left(new InvalidFieldValueException(field, value))
-    }
-}
-object AddDate extends GtfsCalendarDateException
-object RemoveDate extends GtfsCalendarDateException
-
-case class GtfsCalendarDate(serviceId: Long, date: LocalDate, exceptionType: GtfsCalendarDateException)
-
 case class GtfsRoute(
     id: String,
     agencyId: Long,

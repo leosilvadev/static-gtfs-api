@@ -2,9 +2,9 @@ package com.github.leosilvadev.gtfs.csv
 
 import java.time.LocalDate
 
-import com.github.leosilvadev.gtfs.{GtfsCalendarDate, RemoveDate}
 import com.github.leosilvadev.gtfs.csv.FileReadOps._
 import com.github.leosilvadev.gtfs.csv.exceptions.MissingFieldsException
+import com.github.leosilvadev.gtfs.domain.GtfsExcludedCalendarDate
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -51,7 +51,7 @@ class GtfsCalendarDateFileTest extends AnyFunSpec with Matchers {
           case Left(ex) => fail("Failed because of unexpected error", ex)
           case Right(calendars) =>
             calendars must have size 3
-            calendars.head mustBe Right(GtfsCalendarDate(1, LocalDate.of(2020, 10, 31), RemoveDate))
+            calendars.head mustBe Right(GtfsExcludedCalendarDate("1", LocalDate.of(2020, 10, 31)))
         }
       }
     }
