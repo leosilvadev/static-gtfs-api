@@ -1,6 +1,6 @@
 package com.github.leosilvadev.gtfs.csv
 
-import com.github.leosilvadev.gtfs.GtfsStop
+import com.github.leosilvadev.gtfs.domain.GtfsStop
 import com.github.leosilvadev.gtfs.csv.FileReadOps._
 import com.github.leosilvadev.gtfs.csv.exceptions.MissingFieldsException
 import org.scalatest.funspec.AnyFunSpec
