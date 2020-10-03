@@ -1,8 +1,8 @@
 package com.github.leosilvadev.gtfs.csv
 
 import java.nio.file.{Files, Path}
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalTime}
+import java.time.format.{DateTimeFormatter, DateTimeParseException}
 
 import com.github.leosilvadev.gtfs.csv.exceptions.{
   FileReadException,
@@ -136,4 +136,16 @@ trait GtfsFile[T] {
       case _: Throwable => Left(new InvalidFieldValueException(field, value))
     }
 
+  private[csv] def toOptionalLocalTime(value: String): Option[LocalTime] = {
+    val finalValue = value.replaceAllLiterally("\"", "").trim
+    if (finalValue.isEmpty) None
+    else
+      try {
+        Some(LocalTime.parse(fixTimeStr(finalValue), DateTimeFormatter.ISO_LOCAL_TIME))
+      } catch {
+        case _: DateTimeParseException => None
+      }
+  }
+
+  private[csv] def fixTimeStr(value: String): String = if(value.length == 7) s"0$value" else value
 }
