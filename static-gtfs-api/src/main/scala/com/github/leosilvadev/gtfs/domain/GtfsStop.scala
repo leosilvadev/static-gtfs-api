@@ -62,12 +62,12 @@ package com.github.leosilvadev.gtfs.domain
   *                            1 - Station entrance is wheelchair accessible.
   *                            2 - No accessible path from station entrance to stops/platforms.
   *
-  * @param levelId Level of the location. The same level can be used by multiple unlinked stations.
+  * @param levelId            Level of the location. The same level can be used by multiple unlinked stations.
   *
-  * @param platformCode Platform identifier for a platform stop (a stop belonging to a station).
-  *                    This should be just the platform identifier (eg. "G" or "3").
-  *                    Words like “platform” or "track" (or the feed’s language-specific equivalent) should not be included.
-  *                    This allows feed consumers to more easily internationalize and localize the platform identifier into other languages.
+  * @param platformCode       Platform identifier for a platform stop (a stop belonging to a station).
+  *                           This should be just the platform identifier (eg. "G" or "3").
+  *                           Words like “platform” or "track" (or the feed’s language-specific equivalent) should not be included.
+  *                           This allows feed consumers to more easily internationalize and localize the platform identifier into other languages.
   * */
 case class GtfsStop(
     id: String,
