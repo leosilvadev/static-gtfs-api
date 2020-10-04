@@ -83,6 +83,17 @@ trait GtfsFile[T] {
       case _: Throwable => Left(new InvalidFieldValueException(field, value))
     }
 
+  private[csv] def toDouble(
+      value: String,
+      field: String
+  ): Either[InvalidFieldValueException, Double] =
+    try {
+      val finalValue = value.replaceAllLiterally("\"", "").trim
+      Right(finalValue.toDouble)
+    } catch {
+      case _: Throwable => Left(new InvalidFieldValueException(field, value))
+    }
+
   private[csv] def toOptionalDouble(
       value: String
   ): Option[Double] =
@@ -147,5 +158,5 @@ trait GtfsFile[T] {
       }
   }
 
-  private[csv] def fixTimeStr(value: String): String = if(value.length == 7) s"0$value" else value
+  private[csv] def fixTimeStr(value: String): String = if (value.length == 7) s"0$value" else value
 }

@@ -22,5 +22,5 @@ case class GtfsShape(
     latitude: Double,
     longitude: Double,
     sequence: Int,
-    distanceTraveled: Option[Int]
+    distanceTraveled: Option[Double]
 )
